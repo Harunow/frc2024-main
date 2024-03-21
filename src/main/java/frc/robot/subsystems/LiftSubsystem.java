@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class LiftSubsystem {
 
-    XboxController secondDriversController = new XboxController(Constants.ControllersConstants.SECOND_DRIVERS_CONTROLLER);
-    public PWMSparkMax leftLiftCIM;
-    public PWMSparkMax rightLiftCIM;
+    final XboxController secondDriversController = new XboxController(Constants.ControllersConstants.SECOND_DRIVERS_CONTROLLER);
+    public final PWMSparkMax leftLiftCIM;
+    public final PWMSparkMax rightLiftCIM;
 
     public LiftSubsystem(){
        leftLiftCIM = new PWMSparkMax(Constants.LiftsConstant.LL_CIM_MOTOR); 

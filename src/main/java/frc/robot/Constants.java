@@ -4,14 +4,9 @@
 
 package frc.robot;
 
-import java.util.Map;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -22,9 +17,6 @@ import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
 
   public static final class ControllersConstants {
     public static final int FIRST_DRIVERS_CONTROLLER = 0; // controller port for egemen's gamepad   
@@ -41,12 +33,6 @@ public final class Constants {
       public static final int RL_CIM_MOTOR = 8; // Right Lift CIM Motor 
   }
 
-  public static final class IntakesConstants{
-    public static final int CAN_LIFT_INTAKE = 26;
-    
-    
-  }
-
   public static final int LF_MOTOR_CHANNEL = 5;
   public static final int RF_MOTOR_CHANNEL = 8;
   public static final int LR_MOTOR_CHANNEL = 14;
@@ -59,7 +45,5 @@ public final class Constants {
 
   
   public static final DifferentialDrive FRONT_DRIVE = new DifferentialDrive(LF_MOTOR, RF_MOTOR);
-  public static final DifferentialDrive REAR_DRIVE = new DifferentialDrive(LF_MOTOR, RR_MOTOR);
-
-  public static final double GearRatio = 60;
+  public static final DifferentialDrive REAR_DRIVE = new DifferentialDrive(LR_MOTOR, RR_MOTOR);
 }

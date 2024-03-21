@@ -5,12 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShootingSubsystem;
-import frc.robot.subsystems.LiftSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,13 +18,13 @@ import frc.robot.subsystems.LiftSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
   private XboxController firstDriverController;
   private XboxController secondDriverController;
   private DrivetrainSubsystem m_drivetrain_test;
-  private LiftSubsystem m_lift_test;
   private ShootingSubsystem m_intake_encoder;
   private double pos;
+  private int goal;
+  private int povValue;
   //private VictorTest m_test;
 
   /**
@@ -38,7 +37,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     firstDriverController = new XboxController(Constants.ControllersConstants.FIRST_DRIVERS_CONTROLLER);
     secondDriverController = new XboxController(Constants.ControllersConstants.SECOND_DRIVERS_CONTROLLER);
-    m_lift_test = new LiftSubsystem();
+
+
     m_intake_encoder = new ShootingSubsystem();
     m_drivetrain_test = new DrivetrainSubsystem();
 
@@ -72,14 +72,47 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    goal = 0;
+    povValue = -1;
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    Timer timer = new Timer();
+
+    timer.restart();
+    m_intake_encoder.autoPos(pos);
+    m_intake_encoder.getPOVValues(povValue);
+
+    // Task Definers
+    if (timer.hasElapsed(1)) {
+      goal = 1;
+    }
+    if (timer.hasElapsed(6)) {
+      goal = 2;
+    }
+    if (timer.hasElapsed(6.5)) {
+      goal = 3;
+    }
+    if (timer.hasElapsed(11.5)) {
+      goal = 4;
+    }
+    if (timer.hasElapsed(12)) {
+      goal = 4;
+    }
+    System.out.println(goal);
+
+    // Task Values
+    switch (goal) {
+      case 0 -> {povValue = 0; pos = -1.25;} // Shooter Extract - LiftIntake pos = ground
+      case 1 -> {povValue = -1; m_drivetrain_test.driveBoth(-0.7, 0, 1);} // Stop Shooter - Drive towards 2nd Note
+      case 2 -> povValue = 270; //Intake Insert
+      case 3 -> {povValue = -1; m_drivetrain_test.driveBoth(0.7, 0, 1); pos = 0;} // Stop Intake - Drive towards Speaker - LiftIntake pos = shooter
+      case 4 -> povValue = 45; // Intake & Shooter Extrude
+      case 5 -> povValue = -1; // Stop Intake & Shooter
+    }
+  }
 
   @Override//
   public void teleopInit() {
@@ -93,35 +126,26 @@ public class Robot extends TimedRobot {
     double spd =  firstDriverController.getLeftX();
     double rotation = firstDriverController.getLeftY();
     double drivetrainthrottle = firstDriverController.getRightTriggerAxis();
-
-    double secRightTrig = secondDriverController.getRightTriggerAxis();
-    double secLeftTrig = secondDriverController.getLeftTriggerAxis();
-    boolean secRightBumpVal = secondDriverController.getLeftBumper();
     
-    boolean secXButton = secondDriverController.getXButton(); // Intake Extrude
-    boolean secYButton = secondDriverController.getYButton(); // Shooter Extrude
-    boolean secBButton = secondDriverController.getBButton(); // Shooter Insert
-    boolean secAButton = secondDriverController.getAButton(); // Intake Insert
+    povValue = secondDriverController.getPOV();
    
     m_drivetrain_test.driveBoth(spd, rotation, drivetrainthrottle);
+    m_intake_encoder.autoPos(pos);
+    // Kazim's Controller
+    m_intake_encoder.getPOVValues(povValue);
 
-    //EGEMEN'S CONTROLS
-    
+    //Egemen's Controller
     if (firstDriverController.getBButton()) {
       pos = 0;
     }
-
     if (firstDriverController.getYButton()) {
+      //Degeri kontrol et
       pos = -0.45;
     }
-
     if (firstDriverController.getXButton()){
-
-      //TODO duzelt
+      //Degeri kontrol et
       pos = -1.3;
     }
-    
-    m_intake_encoder.autoPos(pos); 
   }
 
   @Override

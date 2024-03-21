@@ -5,22 +5,15 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShootingSubsystem extends SubsystemBase {
-  public XboxController firstDriversController = new XboxController(Constants.ControllersConstants.SECOND_DRIVERS_CONTROLLER);
-  public PWMSparkMax leftCIMMotor; 
-  public PWMSparkMax rightCIMMotor;
-  public RelativeEncoder encoder;
-  public PWMSparkMax intakeNEO = new PWMSparkMax(3);
-  private CANSparkMax liftIntakeNEO;
-
-
-  LinearFilter smoothFilter = LinearFilter.movingAverage(25);
+  public final PWMSparkMax leftCIMMotor;
+  public final PWMSparkMax rightCIMMotor;
+  public final RelativeEncoder encoder;
+  public final PWMSparkMax intakeNEO = new PWMSparkMax(3);
+  private final CANSparkMax liftIntakeNEO;
 
   public ShootingSubsystem() {
     liftIntakeNEO = new CANSparkMax(26, CANSparkLowLevel.MotorType.kBrushless);
@@ -49,53 +42,46 @@ public class ShootingSubsystem extends SubsystemBase {
     liftIntakeNEO.set(yAxis * 0.3);
   }
 
-  public void intakeInsert(){
-    Timer timer = new Timer();
-
-    timer.start();
-    do {
-      intakeNEO.set(-0.5);
+  public void getPOVValues(int powValue){
+    switch (powValue) {
+      // Unpressed
+      case -1 -> {
+        intakeNEO.set(0.0);
+        leftCIMMotor.set(0.0);
+        rightCIMMotor.set(0.0);
+      }
+      // Pressed - 1 Part working
+      case 0 -> {
+        intakeNEO.set(0.0);
+        leftCIMMotor.set(0.9);
+        rightCIMMotor.set(0.9);
+      }
+      case 90 -> {
+        intakeNEO.set(0.7);
+        leftCIMMotor.set(0.0);
+        rightCIMMotor.set(0.0);
+      }
+      case 180 -> {
+        intakeNEO.set(0.0);
+        leftCIMMotor.set(-0.2);
+        rightCIMMotor.set(-0.2);
+      }
+      case 270 -> {
+        intakeNEO.set(-0.3);
+        leftCIMMotor.set(0.0);
+        rightCIMMotor.set(0.0);
+      }
+      // Pressed - 2 Part Working
+      case 45 -> {
+        intakeNEO.set(0.7);
+        leftCIMMotor.set(0.9);
+        rightCIMMotor.set(0.9);
+      }
+      case 225 -> {
+        intakeNEO.set(-0.3);
+        leftCIMMotor.set(-0.2);
+        rightCIMMotor.set(-0.2);
+      }
     }
-    while (timer.get() < 0.3);
-    intakeNEO.set(0);
-  }
-
-  public void intakeExtrude(){
-    Timer timer = new Timer();
-
-    timer.start();
-    do {
-      intakeNEO.set(0.8);
-    }
-    while (timer.get() < 0.3);
-    intakeNEO.set(0);
-  }
-
-  public void shooterExtrude(){
-    Timer timer = new Timer();
-
-    timer.start();
-    do {
-      leftCIMMotor.set(1);
-      rightCIMMotor.set(1);
-    }
-    while (timer.get() < 0.5);
-    leftCIMMotor.set(0);
-      rightCIMMotor.set(0);
-  }
-
-  public void shooterInsert(){
-    Timer timer = new Timer();
-
-    timer.start();
-    do {
-      leftCIMMotor.set(-0.4);
-      rightCIMMotor.set(-0.4);
-    }
-    while (timer.get() < 0.2);
-    leftCIMMotor.set(0);
-      rightCIMMotor.set(0);
   }
 }
-
-  
