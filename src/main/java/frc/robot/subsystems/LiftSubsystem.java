@@ -24,12 +24,12 @@ public class LiftSubsystem {
     }
     
     public void liftUp(double lefCond, double rightCond, boolean reverse){
-            if (reverse == false) {
+            if (!reverse) {
                 leftLiftCIM.set(lefCond);
                 rightLiftCIM.set(rightCond);
             }
 
-            if (reverse == true) {
+            if (reverse) {
                 leftLiftCIM.set(-lefCond);
                 rightLiftCIM.set(-rightCond);
             }
