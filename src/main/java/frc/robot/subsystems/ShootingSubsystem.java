@@ -1,13 +1,11 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ShootingSubsystem extends SubsystemBase {
   public final PWMSparkMax leftCIMMotor;
@@ -30,7 +28,7 @@ public class ShootingSubsystem extends SubsystemBase {
 
   public void autoPos(double desiredPos){
     double getPos = encoder.getPosition();
-    double speed = (getPos - desiredPos) / 3;
+      double speed = (getPos - desiredPos) * 0.7;
 
     liftIntakeNEO.set(-speed);
   }
@@ -60,14 +58,14 @@ public class ShootingSubsystem extends SubsystemBase {
         rightCIMMotor.set(0.9);
       }
       case 90 -> {
-        intakeNEO.set(0.7);
+          intakeNEO.set(1);
         leftCIMMotor.set(0.0);
         rightCIMMotor.set(0.0);
       }
       case 180 -> {
         intakeNEO.set(0.0);
-        leftCIMMotor.set(-0.2);
-        rightCIMMotor.set(-0.2);
+          leftCIMMotor.set(-0.5);
+          rightCIMMotor.set(-0.5);
       }
       case 270 -> {
         intakeNEO.set(-0.3);
@@ -82,8 +80,8 @@ public class ShootingSubsystem extends SubsystemBase {
       }
       case 225 -> {
         intakeNEO.set(-0.3);
-        leftCIMMotor.set(-0.2);
-        rightCIMMotor.set(-0.2);
+          leftCIMMotor.set(-0.5);
+          rightCIMMotor.set(-0.5);
       }
     }
   }

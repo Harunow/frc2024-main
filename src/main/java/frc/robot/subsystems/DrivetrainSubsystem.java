@@ -10,6 +10,7 @@ public class DrivetrainSubsystem {
     public void arcadeDrv(double spd, double rotation, double drivethrottle, DifferentialDrive drive){
         spd *= drivethrottle;   
         rotation *= drivethrottle;
+
         drive.arcadeDrive(spd, rotation, true);
     }
 

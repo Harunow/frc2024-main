@@ -23,9 +23,9 @@ public class Robot extends TimedRobot {
   private DrivetrainSubsystem m_drivetrain_test;
   private ShootingSubsystem m_intake_encoder;
   private double pos;
-  private int goal;
+  private int task;
   private int povValue;
-  //private VictorTest m_test;
+  private Timer timer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
     m_drivetrain_test = new DrivetrainSubsystem();
 
     pos = 0;
+    povValue = -1;
   }
 
   /**
@@ -71,48 +72,76 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // schedule the autonomous command (example)
-    goal = 0;
-    povValue = -1;
+    timer = new Timer();
+
+    timer.reset();
+    timer.start();
+
+    task = -1;
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    Timer timer = new Timer();
+    System.out.println(timer.get());
 
-    timer.start();
     m_intake_encoder.autoPos(pos);
     m_intake_encoder.getPOVValues(povValue);
 
     // Task Definers
-    if (0 < timer.get() && timer.get() < 1.5) {
-      goal = 0;
+    if (0 < timer.get() && timer.get() < 1.5) { // 1.5 sec
+      task = 1;
     }
-    if (1.5 < timer.get() && timer.get() < 4) {
-      goal = 1;
+    if (1.5 < timer.get() && timer.get() < 2) { // 0.5 sec
+      task = 2;
     }
-    if (4 < timer.get() && timer.get() < 5) {
-      goal = 2;
+    if (2 < timer.get() && timer.get() < 3.5) { // 1.5 sec
+      task = 3;
     }
-    if (5 < timer.get() && timer.get() < 7.5) {
-      goal = 3;
+    if (3.5 < timer.get() && timer.get() < 4.5) { // 1 sec
+      task = 4;
     }
-    if (7.5 < timer.get() && timer.get() < 9) {
-      goal = 4;
+    if (4.5 < timer.get() && timer.get() < 6) { // 1.5 sec
+      task = 5;
     }
-    if (9 < timer.get() && timer.get() < 10) {
-      goal = 5;
+    if (6.5 < timer.get() && timer.get() < 7) { // 0.5 sec
+      task = 6;
     }
-    System.out.println(goal);
+    if (7 < timer.get() && timer.get() < 8.5) { // 1.5 sec
+      task = 7;
+    }
+    if (8.5 < timer.get()) { // Last Task
+      task = 8;
+    }
+    System.out.println(task);
 
     // Task Values
-    switch (goal) {
-      case 0 -> {povValue = 0; pos = -1.25;} // Shooter Extract - LiftIntake pos = ground
-      case 1 -> {povValue = -1; m_drivetrain_test.driveBoth(-0.7, 0, 1);} // Stop Shooter - Drive towards 2nd Note
-      case 2 -> povValue = 270; //Intake Insert
-      case 3 -> {povValue = -1; m_drivetrain_test.driveBoth(0.7, 0, 1); pos = 0;} // Stop Intake - Drive towards Speaker - LiftIntake pos = shooter
-      case 4 -> povValue = 45; // Intake & Shooter Extrude
-      case 5 -> povValue = -1; // Stop Intake & Shooter
+    switch (task) {
+      case 1 -> { // Intake Down & Shooter Extrude
+        povValue = 0;
+        pos = -1.1;
+      }
+      case 2 -> {
+        povValue = -1;
+        m_drivetrain_test.driveBoth(-0.7, 0, 1);
+      }
+      case 3 -> m_drivetrain_test.driveBoth(0, -0.7, 1);
+      case 4 -> povValue = 270;
+      case 5 -> {
+        povValue = -1;
+        m_drivetrain_test.driveBoth(0, 0.7, 1);
+        pos = 0;
+      }
+      case 6 -> {
+        m_drivetrain_test.driveBoth(0.7, 0, 1);
+        pos = 0;
+      }
+      case 8 -> pos = 0;
+      case 9 -> povValue = 45;
+      case 10 -> {
+        povValue = -1;
+        System.out.println("Program Stopped");
+      }
     }
   }
 
@@ -146,7 +175,7 @@ public class Robot extends TimedRobot {
     }
     if (firstDriverController.getXButton()){
       //Degeri kontrol et
-      pos = -1.3;
+      pos = -1.1;
     }
   }
 
