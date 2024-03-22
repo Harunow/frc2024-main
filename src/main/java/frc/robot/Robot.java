@@ -80,25 +80,28 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     Timer timer = new Timer();
 
-    timer.restart();
+    timer.start();
     m_intake_encoder.autoPos(pos);
     m_intake_encoder.getPOVValues(povValue);
 
     // Task Definers
-    if (timer.hasElapsed(1)) {
+    if (0 < timer.get() && timer.get() < 1.5) {
+      goal = 0;
+    }
+    if (1.5 < timer.get() && timer.get() < 4) {
       goal = 1;
     }
-    if (timer.hasElapsed(6)) {
+    if (4 < timer.get() && timer.get() < 5) {
       goal = 2;
     }
-    if (timer.hasElapsed(6.5)) {
+    if (5 < timer.get() && timer.get() < 7.5) {
       goal = 3;
     }
-    if (timer.hasElapsed(11.5)) {
+    if (7.5 < timer.get() && timer.get() < 9) {
       goal = 4;
     }
-    if (timer.hasElapsed(12)) {
-      goal = 4;
+    if (9 < timer.get() && timer.get() < 10) {
+      goal = 5;
     }
     System.out.println(goal);
 
@@ -149,6 +152,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 

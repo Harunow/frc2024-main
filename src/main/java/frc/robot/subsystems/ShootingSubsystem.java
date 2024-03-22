@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import frc.robot.Constants;
 
 import com.revrobotics.CANSparkLowLevel;
@@ -21,8 +22,10 @@ public class ShootingSubsystem extends SubsystemBase {
     rightCIMMotor = new PWMSparkMax(Constants.LaunchersConstants.RIGHT_CIM_MOTOR); // CIM motor right.
 
     encoder = liftIntakeNEO.getEncoder();
+
     encoder.setPosition(0);
     encoder.setPositionConversionFactor(0.035);
+
   }
 
   public void autoPos(double desiredPos){
